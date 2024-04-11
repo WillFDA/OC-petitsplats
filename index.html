@@ -3,10 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <title>Vanilla Tailwind CSS Boilerplate</title>
     <script type="module" src="main.js" defer></script>
   </head>
-  <body>
-    <h1 class="text-3xl font-bold">Hello World</h1>
+  <body class="bg-gray-200">
+    <main class="bg-hero p-8">
+      <div class="flex w-full justify-start">
+        <img src="./public/logo.svg" alt="logo" class="h-6">
+      </div>
+      <div class="flex flex-col items-center justify-center gap-6 py-44">
+        <h1 class="text-primary font-serif text-5xl leading-normal text-center">CHERCHEZ PARMI PLUS DE 1500 RECETTES<br>DU QUOTIDIEN,SIMPLES ET DÉLICIEUSES</h1>
+        <div class="relative rounded-xl overflow-hidden">
+          <div class="w-12 h-12 absolute top-3 right-3 bg-dark rounded-lg flex items-center justify-center cursor-pointer">
+            <img src="./public/Search.svg" alt="search icon" class="">
+          </div>
+          <input class="pl-6 pr-16 py-6 w-[900px] line-clamp-1" type="text" placeholder="Rechercher une recette, un ingrédient, ...">
+        </div>
+      </div>
+    </main>
+    <section class="max-w-screen-xl mx-auto py-8">
+      <div class="w-full flex justify-between items-center">
+        <div class="flex gap-8">
+          <div data-opened="false" class="bg-white rounded-xl px-3 py-3 group/select w-52">
+            <button  class="flex w-full justify-between items-center gap-8 text-black font-sans dropdown-js">
+              <span class="font-sans">Ingrédients</span>
+              <img class="w-3 h-fit group-data-[opened='true']/select:rotate-180" src="./public/caret.svg" alt="caret icon">
+            </button>
+            <div class="relative mt-2 hidden group-data-[opened='true']/select:flex ">
+              <img src="./public/tiny_search.svg" alt="search icon" class="absolute top-1/2 -translate-y-1/2 right-3">
+              <input type="text" class="border-gray-200 border-1 border py-1 px-1 rounded focus:outline-none text-gray-500 font-light">
+            </div>
+            <div class="selected-btns">
+              <button class="bg-primary justify-between items-center my-2 p-3 font-light text-black w-full hidden group-data-[opened='true']/select:flex">
+                <span>Jus de citron</span>
+                <img src="./public/tiny_close.svg" alt="delete icon" class="w-5 delete-btn">
+              </button>
+              <button class="bg-primary justify-between items-center my-2 p-3 font-light text-black w-full hidden group-data-[opened='true']/select:flex">
+                <span>Jus de citron</span>
+                <img src="./public/tiny_close.svg" alt="delete icon" class="w-5 delete-btn">
+              </button>
+            </div>
+            <ul class="flex-col gap-2 font-light text-dark mt-3 max-h-44 overflow-y-auto hidden group-data-[opened='true']/select:flex">
+              <li>Glaçons</li>
+              <li>Tomate</li>
+              <li>Poulet</li>
+              <li>Poivron rouge</li>
+              <li>Thon en miettes</li>
+              <li>Vinaigrettes</li>
+            </ul>
+          </div>
+        </div>
+          <span class="font-serif text-xl self-start mt-3">1500 recettes</span>
+      </div>
+    </section>
+    <script src="./scripts/utils/dropdown.js" defer></script>
   </body>
 </html>
