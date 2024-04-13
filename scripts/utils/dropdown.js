@@ -1,7 +1,6 @@
 const dropdowns = document.querySelectorAll(".dropdown-js");
 const selectedBtnsContainer = document.querySelector(".selected-btns");
 const listContainer = document.querySelector(".list-js");
-
 let liBtns = [];
 let deleteBtns = [];
 
@@ -10,26 +9,28 @@ function updateDeleteBtns() {
 }
 
 function updateLiBtns() {
-  liBtns = Array.from(document.querySelectorAll(".list-js li"));
+  liBtns = Array.from(listContainer.querySelectorAll("li"));
 }
 
 function addDeleteButtonListener(deleteBtn) {
-  deleteBtn.addEventListener("click", (e) => {
+  const handleDeleteClick = (e) => {
     const text = e.currentTarget.parentElement.textContent;
     const deleteBtnContainer = e.currentTarget.parentElement;
     deleteBtnContainer.remove();
     updateDeleteBtns();
-
     const newLi = document.createElement("li");
     newLi.textContent = text;
     listContainer.appendChild(newLi);
     updateLiBtns();
+    removeAllListeners();
     liBtns.forEach(addLiButtonListener);
-  });
+    deleteBtns.forEach(addDeleteButtonListener);
+  };
+  deleteBtn.addEventListener("click", handleDeleteClick);
 }
 
 function addLiButtonListener(li) {
-  li.addEventListener("click", (e) => {
+  const handleLiClick = (e) => {
     const text = e.currentTarget.textContent;
     const newButton = document.createElement("button");
     newButton.classList.add(
@@ -56,8 +57,23 @@ function addLiButtonListener(li) {
     e.currentTarget.remove();
     updateDeleteBtns();
     updateLiBtns();
-    
+    removeAllListeners();
+    liBtns.forEach(addLiButtonListener);
     deleteBtns.forEach(addDeleteButtonListener);
+  };
+  li.addEventListener("click", handleLiClick);
+}
+
+function removeAllListeners() {
+  liBtns.forEach((li) => {
+    const clonedLi = li.cloneNode(true);
+    li.replaceWith(clonedLi);
+    addLiButtonListener(clonedLi);
+  });
+  deleteBtns.forEach((deleteBtn) => {
+    const clonedBtn = deleteBtn.cloneNode(true);
+    deleteBtn.replaceWith(clonedBtn);
+    addDeleteButtonListener(clonedBtn);
   });
 }
 
@@ -68,10 +84,10 @@ dropdowns.forEach((dropdown) => {
   dropdown.addEventListener("click", (e) => {
     const dropdownContainer = e.currentTarget.parentElement;
     dropdownContainer.dataset.opened === "true"
-    ? (dropdownContainer.dataset.opened = "false")
-    : (dropdownContainer.dataset.opened = "true");
+      ? (dropdownContainer.dataset.opened = "false")
+      : (dropdownContainer.dataset.opened = "true");
   });
 });
 
-deleteBtns.forEach(addDeleteButtonListener);
 liBtns.forEach(addLiButtonListener);
+deleteBtns.forEach(addDeleteButtonListener);
