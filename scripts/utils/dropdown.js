@@ -1,93 +1,79 @@
-const dropdowns = document.querySelectorAll(".dropdown-js");
-const selectedBtnsContainer = document.querySelector(".selected-btns");
-const listContainer = document.querySelector(".list-js");
-let liBtns = [];
-let deleteBtns = [];
+document.addEventListener('DOMContentLoaded', function () {
+  const dropdownParents = document.querySelectorAll('.dropdown-parent');
 
-function updateDeleteBtns() {
-  deleteBtns = Array.from(document.querySelectorAll(".delete-btn"));
-}
+  dropdownParents.forEach((dropdownParent) => {
+    const dropdownName = dropdownParent.dataset.dropdown;
+    const dropdownButton = dropdownParent.querySelector('.dropdown-button');
+    const searchInput = dropdownParent.querySelector('.search-input input');
+    const selectedBtnsContainer = dropdownParent.querySelector('.selected-btns');
+    const listContainer = dropdownParent.querySelector('.list-items');
 
-function updateLiBtns() {
-  liBtns = Array.from(listContainer.querySelectorAll("li"));
-}
+    dropdownButton.addEventListener('click', toggleDropdown);
+    listContainer.addEventListener('click', handleListItemClick);
+    selectedBtnsContainer.addEventListener('click', handleDeleteButtonClick);
+    searchInput.addEventListener('input', handleSearch);
 
-function addDeleteButtonListener(deleteBtn) {
-  const handleDeleteClick = (e) => {
-    const text = e.currentTarget.parentElement.textContent;
-    const deleteBtnContainer = e.currentTarget.parentElement;
-    deleteBtnContainer.remove();
-    updateDeleteBtns();
-    const newLi = document.createElement("li");
-    newLi.textContent = text;
-    listContainer.appendChild(newLi);
-    updateLiBtns();
-    removeAllListeners();
-    liBtns.forEach(addLiButtonListener);
-    deleteBtns.forEach(addDeleteButtonListener);
-  };
-  deleteBtn.addEventListener("click", handleDeleteClick);
-}
+    function toggleDropdown() {
+      dropdownParent.classList.toggle('open');
+      searchInput.parentElement.classList.toggle('hidden');
+      listContainer.classList.toggle('hidden');
+    }
 
-function addLiButtonListener(li) {
-  const handleLiClick = (e) => {
-    const text = e.currentTarget.textContent;
-    const newButton = document.createElement("button");
-    newButton.classList.add(
-      "bg-primary",
-      "justify-between",
-      "items-center",
-      "my-2",
-      "p-3",
-      "font-light",
-      "text-black",
-      "w-full",
-      "hidden",
-      "group-data-[opened='true']/select:flex"
-    );
-    const span = document.createElement("span");
-    span.textContent = text;
-    const img = document.createElement("img");
-    img.src = "./tiny_close.svg";
-    img.alt = "delete icon";
-    img.classList.add("w-5", "delete-btn");
-    newButton.appendChild(span);
-    newButton.appendChild(img);
-    selectedBtnsContainer.appendChild(newButton);
-    e.currentTarget.remove();
-    updateDeleteBtns();
-    updateLiBtns();
-    removeAllListeners();
-    liBtns.forEach(addLiButtonListener);
-    deleteBtns.forEach(addDeleteButtonListener);
-  };
-  li.addEventListener("click", handleLiClick);
-}
+    function handleListItemClick(event) {
+      if (event.target.tagName === 'LI') {
+        const listItem = event.target;
+        const text = listItem.textContent;
+        listItem.classList.add('hidden');
+        createSelectedButton(text);
+      }
+    }
 
-function removeAllListeners() {
-  liBtns.forEach((li) => {
-    const clonedLi = li.cloneNode(true);
-    li.replaceWith(clonedLi);
-    addLiButtonListener(clonedLi);
-  });
-  deleteBtns.forEach((deleteBtn) => {
-    const clonedBtn = deleteBtn.cloneNode(true);
-    deleteBtn.replaceWith(clonedBtn);
-    addDeleteButtonListener(clonedBtn);
-  });
-}
+    function handleDeleteButtonClick(event) {
+      if (event.target.classList.contains('delete-btn')) {
+        const deleteButton = event.target;
+        const selectedButton = deleteButton.parentElement;
+        const text = selectedButton.querySelector('span').textContent;
+        selectedButton.remove();
+        showListItem(text);
+      }
+    }
 
-updateDeleteBtns();
-updateLiBtns();
+    function createSelectedButton(text) {
+      const selectedButton = document.createElement('button');
+      selectedButton.classList.add('bg-primary', 'justify-between', 'items-center', 'my-2', 'p-3', 'font-light', 'text-black', 'w-full', 'flex');
+      selectedButton.innerHTML = `
+        <span>${text}</span>
+        <img src="./tiny_close.svg" alt="delete icon" class="w-5 delete-btn">
+      `;
+      selectedBtnsContainer.appendChild(selectedButton);
+    }
 
-dropdowns.forEach((dropdown) => {
-  dropdown.addEventListener("click", (e) => {
-    const dropdownContainer = e.currentTarget.parentElement;
-    dropdownContainer.dataset.opened === "true"
-      ? (dropdownContainer.dataset.opened = "false")
-      : (dropdownContainer.dataset.opened = "true");
+    function showListItem(text) {
+      const listItem = Array.from(listContainer.children).find(
+        (item) => item.textContent.trim() === text.trim()
+      );
+      if (listItem) {
+        listItem.classList.remove('hidden');
+      }
+    }
+
+    function handleSearch(event) {
+      const searchTerm = event.target.value.toLowerCase();
+      const listItems = Array.from(listContainer.children);
+      const selectedButtons = Array.from(selectedBtnsContainer.children);
+
+      listItems.forEach((item) => {
+        const itemText = item.textContent.toLowerCase();
+        const isSelected = selectedButtons.some(
+          (button) => button.querySelector('span').textContent.toLowerCase() === itemText
+        );
+
+        if (itemText.includes(searchTerm) && !isSelected) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    }
   });
 });
-
-liBtns.forEach(addLiButtonListener);
-deleteBtns.forEach(addDeleteButtonListener);
