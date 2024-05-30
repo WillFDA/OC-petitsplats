@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   const dropdownParents = document.querySelectorAll('.dropdown-parent');
-
+  const queryBigList = document.getElementById('query-big-list');
   dropdownParents.forEach((dropdownParent) => {
-    const dropdownName = dropdownParent.dataset.dropdown;
     const dropdownButton = dropdownParent.querySelector('.dropdown-button');
     const searchInput = dropdownParent.querySelector('.search-input input');
     const selectedBtnsContainer = dropdownParent.querySelector('.selected-btns');
@@ -14,9 +13,15 @@ document.addEventListener('DOMContentLoaded', function () {
     searchInput.addEventListener('input', handleSearch);
 
     function toggleDropdown() {
-      dropdownParent.classList.toggle('open');
-      searchInput.parentElement.classList.toggle('hidden');
-      listContainer.classList.toggle('hidden');
+      const isOpen = dropdownParent.getAttribute('data-open') === 'true';
+
+      dropdownParents.forEach((parent) => {
+        parent.setAttribute('data-open', 'false');
+      });
+
+      if (!isOpen) {
+        dropdownParent.setAttribute('data-open', 'true');
+      }
     }
 
     function handleListItemClick(event) {
@@ -25,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const text = listItem.textContent;
         listItem.classList.add('hidden');
         createSelectedButton(text);
+        createBigQueryButton(text);
       }
     }
 
@@ -35,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const text = selectedButton.querySelector('span').textContent;
         selectedButton.remove();
         showListItem(text);
+        removeBigQueryButton(text);
       }
     }
 
@@ -55,6 +62,43 @@ document.addEventListener('DOMContentLoaded', function () {
       if (listItem) {
         listItem.classList.remove('hidden');
       }
+    }
+
+    function createBigQueryButton(text) {
+      const bigQueryButton = document.createElement('button');
+      bigQueryButton.classList.add('w-52', 'bg-primary', 'text-black', 'flex', 'items-center', 'justify-between', 'px-4', 'rounded-xl', 'h-14');
+      bigQueryButton.innerHTML = `
+        <span>${text}</span>
+        <img src="/close_big.svg" alt="close icon" class="delete-big-query">
+      `;
+      queryBigList.appendChild(bigQueryButton);
+
+      const deleteIcon = bigQueryButton.querySelector('.delete-big-query');
+      deleteIcon.addEventListener('click', function () {
+        bigQueryButton.remove();
+        showListItem(text);
+        removeSelectedButton(text);
+      });
+    }
+
+    function removeBigQueryButton(text) {
+      const bigQueryButtons = queryBigList.querySelectorAll('button');
+      bigQueryButtons.forEach((button) => {
+        const buttonText = button.querySelector('span').textContent;
+        if (buttonText === text) {
+          button.remove();
+        }
+      });
+    }
+
+    function removeSelectedButton(text) {
+      const selectedButtons = selectedBtnsContainer.querySelectorAll('button');
+      selectedButtons.forEach((button) => {
+        const buttonText = button.querySelector('span').textContent;
+        if (buttonText === text) {
+          button.remove();
+        }
+      });
     }
 
     function handleSearch(event) {
