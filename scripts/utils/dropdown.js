@@ -1,6 +1,38 @@
 document.addEventListener('DOMContentLoaded', function () {
   const dropdownParents = document.querySelectorAll('.dropdown-parent');
   const queryBigList = document.getElementById('query-big-list');
+
+  // Ajout de la fonction applyFilters
+  function applyFilters() {
+    const searchQuery = document.getElementById('big-searchbar').value.trim().toLowerCase();
+    const selectedIngredients = Array.from(document.querySelectorAll('.selected-btns button span')).map(button => button.textContent.toLowerCase());
+    const selectedAppliances = Array.from(document.querySelectorAll('.selected-btns button span')).map(button => button.textContent.toLowerCase());
+    const selectedUstensils = Array.from(document.querySelectorAll('.selected-btns button span')).map(button => button.textContent.toLowerCase());
+
+    const filteredRecipes = recipes.filter(recipe => {
+      const matchSearchQuery = recipe.name.toLowerCase().includes(searchQuery)
+        || recipe.description.toLowerCase().includes(searchQuery)
+        || recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(searchQuery));
+
+      const matchIngredients = selectedIngredients.every(ingredient =>
+        recipe.ingredients.some(i => i.ingredient.toLowerCase() === ingredient)
+      );
+
+      const matchAppliances = selectedAppliances.every(appliance =>
+        recipe.appliance.toLowerCase() === appliance
+      );
+
+      const matchUstensils = selectedUstensils.every(ustensil =>
+        recipe.ustensils.some(u => u.toLowerCase() === ustensil)
+      );
+
+      return matchSearchQuery && matchIngredients && matchAppliances && matchUstensils;
+    });
+
+    displayRecipeCards(filteredRecipes);
+    updateFilteredRecipeCount(filteredRecipes);
+  }
+
   dropdownParents.forEach((dropdownParent) => {
     const dropdownButton = dropdownParent.querySelector('.dropdown-button');
     const searchInput = dropdownParent.querySelector('.search-input input');
@@ -28,9 +60,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (event.target.tagName === 'LI') {
         const listItem = event.target;
         const text = listItem.textContent;
+        const dropdownType = dropdownParent.getAttribute('data-dropdown-type');
         listItem.classList.add('hidden');
-        createSelectedButton(text);
-        createBigQueryButton(text);
+        createSelectedButton(text, dropdownType);
+        createBigQueryButton(text, dropdownType);
+        applyFilters();
       }
     }
 
@@ -39,15 +73,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const deleteButton = event.target;
         const selectedButton = deleteButton.parentElement;
         const text = selectedButton.querySelector('span').textContent;
+        const dropdownType = selectedButton.getAttribute('data-type');
         selectedButton.remove();
         showListItem(text);
-        removeBigQueryButton(text);
+        removeBigQueryButton(text, dropdownType);
+        applyFilters();
       }
     }
 
-    function createSelectedButton(text) {
+    function createSelectedButton(text, dropdownType) {
       const selectedButton = document.createElement('button');
       selectedButton.classList.add('bg-primary', 'justify-between', 'items-center', 'my-2', 'p-3', 'font-light', 'text-black', 'w-full', 'flex');
+      selectedButton.setAttribute('data-type', dropdownType);
       selectedButton.innerHTML = `
         <span>${text}</span>
         <img src="./tiny_close.svg" alt="delete icon" class="w-5 delete-btn">
@@ -64,9 +101,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    function createBigQueryButton(text) {
+    function createBigQueryButton(text, dropdownType) {
       const bigQueryButton = document.createElement('button');
       bigQueryButton.classList.add('w-52', 'bg-primary', 'text-black', 'flex', 'items-center', 'justify-between', 'px-4', 'rounded-xl', 'h-14');
+      bigQueryButton.setAttribute('data-type', dropdownType);
       bigQueryButton.innerHTML = `
         <span>${text}</span>
         <img src="/close_big.svg" alt="close icon" class="delete-big-query">
@@ -78,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
         bigQueryButton.remove();
         showListItem(text);
         removeSelectedButton(text);
+        applyFilters(); // Appel de applyFilters après la suppression d'un bouton de requête
       });
     }
 

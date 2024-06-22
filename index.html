@@ -20,14 +20,14 @@
           <div class="w-12 h-12 absolute top-3 right-3 bg-dark rounded-lg flex items-center justify-center cursor-pointer">
             <img src="./Search.svg" alt="search icon" class="">
           </div>
-          <input class="pl-6 pr-16 py-6 w-[900px] line-clamp-1" type="text" placeholder="Rechercher une recette, un ingrédient, ...">
+          <input id="big-searchbar" class="pl-6 pr-16 py-6 w-[900px] line-clamp-1" type="text" placeholder="Rechercher une recette, un ingrédient, ...">
         </div>
       </div>
     </main>
     <section class="max-w-screen-2xl mx-auto py-8 px-8">
       <div class="w-full flex justify-between items-center mb-4">
         <div class="flex gap-8">
-          <div data-open="false" class="dropdown-parent bg-white group rounded-xl px-3 py-3 w-52 h-fit" data-dropdown="Appareils">
+          <div data-dropdown-type="ingredients" data-open="false" class="dropdown-parent bg-white group rounded-xl px-3 py-3 w-52 h-fit" data-dropdown="Appareils">
             <button class="dropdown-button flex w-full justify-between items-center gap-8 text-black font-sans">
               <span class="font-sans">Ingrédients</span>
               <img class="w-3 h-fit group-data-[open=true]:rotate-180" src="./caret.svg" alt="caret icon">
@@ -47,7 +47,7 @@
               <li>Vinaigrettes</li>
             </ul>
           </div>
-          <div data-open="false" class="dropdown-parent bg-white group rounded-xl px-3 py-3 w-52 h-fit" data-dropdown="Appareils">
+          <div data-dropdown-type="appliances" data-open="false" class="dropdown-parent bg-white group rounded-xl px-3 py-3 w-52 h-fit" data-dropdown="Appareils">
             <button class="dropdown-button flex w-full justify-between items-center gap-8 text-black font-sans">
               <span class="font-sans">Appareils</span>
               <img class="w-3 h-fit group-data-[open=true]:rotate-180" src="./caret.svg" alt="caret icon">
@@ -70,13 +70,13 @@
             </ul>
           </div>
         </div>
-          <span class="font-serif text-xl self-start mt-3">1500 recettes</span>
+          <span id="recipe-count" class="font-serif text-xl self-start mt-3"></span>
       </div>
       <div id="query-big-list" class="flex gap-4">
       </div>
     </section>
-    <section class="max-w-screen-2xl mx-auto py-4 px-8 grid grid-cols-12 gap-12">
-      <div class="col-span-4 bg-blue-500 rounded-3xl overflow-hidden ">
+    <section id="cards-section" class="max-w-screen-2xl mx-auto py-4 px-8 grid grid-cols-12 gap-12">
+      <div class="col-span-4 rounded-3xl overflow-hidden ">
         <div class="w-full object-cover h-64 bg-green-400 relative">
           <div class="bg-primary text-black w-fit p-1 px-4 rounded-full absolute top-4 right-4">
             <span class="text-xs">10min</span>
@@ -113,6 +113,9 @@
         </div>
       </div>
     </section>
+      <script src="./data/recipes.js"></script>
+      <script src="./scripts/utils/recipe-count.js" defer></script>
+      <script src="./scripts/utils/cards.js" defer></script>
       <script src="./scripts/utils/dropdown.js" defer></script>
   </body>
 </html>
