@@ -40,85 +40,38 @@ function displayRecipeCards(recipes) {
 // Fonction pour appliquer les filtres (version avec boucles natives)
 function applyFilters() {
   const searchQuery = document.getElementById('big-searchbar').value.trim().toLowerCase();
-  const selectedIngredients = Array.from(document.querySelectorAll('.selected-btns button[data-type="ingredients"] span')).map(button => button.textContent.toLowerCase());
-  const selectedAppliances = Array.from(document.querySelectorAll('.selected-btns button[data-type="appliances"] span')).map(button => button.textContent.toLowerCase());
-  const selectedUstensils = Array.from(document.querySelectorAll('.selected-btns button[data-type="ustensils"] span')).map(button => button.textContent.toLowerCase());
-  
-  const filteredRecipes = [];
+  const selectedIngredients = Array.from(document.querySelectorAll('.selected-btns button[data-type="ingredients"] span'))
+    .map(button => button.textContent.toLowerCase());
+  const selectedAppliances = Array.from(document.querySelectorAll('.selected-btns button[data-type="appliances"] span'))
+    .map(button => button.textContent.toLowerCase());
+  const selectedUstensils = Array.from(document.querySelectorAll('.selected-btns button[data-type="ustensils"] span'))
+    .map(button => button.textContent.toLowerCase());
 
-  for (let i = 0; i < recipes.length; i++) {
-    const recipe = recipes[i];
-    let matchSearchQuery = false;
-    let matchIngredients = selectedIngredients.length === 0;
-    let matchAppliances = selectedAppliances.length === 0;
-    let matchUstensils = selectedUstensils.length === 0;
+  const filteredRecipes = recipes.filter(recipe => {
+    // Vérification du terme de recherche
+    const searchMatch = searchQuery === '' ||
+      recipe.name.toLowerCase().includes(searchQuery) ||
+      recipe.description.toLowerCase().includes(searchQuery) ||
+      recipe.ingredients.some(ing => ing.ingredient.toLowerCase().includes(searchQuery));
 
-    // Vérification du critère de recherche
-    if (recipe.name.toLowerCase().includes(searchQuery) || 
-        recipe.description.toLowerCase().includes(searchQuery)) {
-      matchSearchQuery = true;
-    } else {
-      let j = 0;
-      while (j < recipe.ingredients.length && !matchSearchQuery) {
-        if (recipe.ingredients[j].ingredient.toLowerCase().includes(searchQuery)) {
-          matchSearchQuery = true;
-        }
-        j++;
-      }
-    }
-
-    // Vérification des ingrédients
-    if (selectedIngredients.length > 0) {
-      matchIngredients = true;
-      for (let k = 0; k < selectedIngredients.length; k++) {
-        let ingredientFound = false;
-        for (let l = 0; l < recipe.ingredients.length; l++) {
-          if (recipe.ingredients[l].ingredient.toLowerCase() === selectedIngredients[k]) {
-            ingredientFound = true;
-            break;
-          }
-        }
-        if (!ingredientFound) {
-          matchIngredients = false;
-          break;
-        }
-      }
-    }
+    // Vérification des ingrédients sélectionnés
+    const ingredientMatch = selectedIngredients.length === 0 ||
+      selectedIngredients.every(selectedIng => 
+        recipe.ingredients.some(ing => ing.ingredient.toLowerCase().includes(selectedIng))
+      );
 
     // Vérification des appareils
-    if (selectedAppliances.length > 0) {
-      matchAppliances = false;
-      for (let m = 0; m < selectedAppliances.length; m++) {
-        if (recipe.appliance.toLowerCase() === selectedAppliances[m]) {
-          matchAppliances = true;
-          break;
-        }
-      }
-    }
+    const applianceMatch = selectedAppliances.length === 0 ||
+      selectedAppliances.some(appliance => recipe.appliance.toLowerCase().includes(appliance));
 
     // Vérification des ustensiles
-    if (selectedUstensils.length > 0) {
-      matchUstensils = true;
-      for (let n = 0; n < selectedUstensils.length; n++) {
-        let ustensilFound = false;
-        for (let p = 0; p < recipe.ustensils.length; p++) {
-          if (recipe.ustensils[p].toLowerCase() === selectedUstensils[n]) {
-            ustensilFound = true;
-            break;
-          }
-        }
-        if (!ustensilFound) {
-          matchUstensils = false;
-          break;
-        }
-      }
-    }
+    const ustensilMatch = selectedUstensils.length === 0 ||
+      selectedUstensils.every(ustensil => 
+        recipe.ustensils.some(u => u.toLowerCase().includes(ustensil))
+      );
 
-    // Si tous les critères sont satisfaits, ajouter la recette aux résultats filtrés
-    if (matchSearchQuery && matchIngredients && matchAppliances && matchUstensils) {
-      filteredRecipes.push(recipe);
-    }
-  }
+    return searchMatch && ingredientMatch && applianceMatch && ustensilMatch;
+  });
 
   displayRecipeCards(filteredRecipes);
   updateFilteredRecipeCount(filteredRecipes);
