@@ -2,37 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const dropdownParents = document.querySelectorAll('.dropdown-parent');
   const queryBigList = document.getElementById('query-big-list');
 
-  // Ajout de la fonction applyFilters
-  function applyFilters() {
-    const searchQuery = document.getElementById('big-searchbar').value.trim().toLowerCase();
-    const selectedIngredients = Array.from(document.querySelectorAll('.selected-btns button span')).map(button => button.textContent.toLowerCase());
-    const selectedAppliances = Array.from(document.querySelectorAll('.selected-btns button span')).map(button => button.textContent.toLowerCase());
-    const selectedUstensils = Array.from(document.querySelectorAll('.selected-btns button span')).map(button => button.textContent.toLowerCase());
-
-    const filteredRecipes = recipes.filter(recipe => {
-      const matchSearchQuery = recipe.name.toLowerCase().includes(searchQuery)
-        || recipe.description.toLowerCase().includes(searchQuery)
-        || recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(searchQuery));
-
-      const matchIngredients = selectedIngredients.every(ingredient =>
-        recipe.ingredients.some(i => i.ingredient.toLowerCase() === ingredient)
-      );
-
-      const matchAppliances = selectedAppliances.every(appliance =>
-        recipe.appliance.toLowerCase() === appliance
-      );
-
-      const matchUstensils = selectedUstensils.every(ustensil =>
-        recipe.ustensils.some(u => u.toLowerCase() === ustensil)
-      );
-
-      return matchSearchQuery && matchIngredients && matchAppliances && matchUstensils;
-    });
-
-    displayRecipeCards(filteredRecipes);
-    updateFilteredRecipeCount(filteredRecipes);
-  }
-
   dropdownParents.forEach((dropdownParent) => {
     const dropdownButton = dropdownParent.querySelector('.dropdown-button');
     const searchInput = dropdownParent.querySelector('.search-input input');
