@@ -1,3 +1,4 @@
+// cards.js
 // Fonction pour générer une carte de recette
 function generateRecipeCard(recipe) {
   const card = document.createElement('div');
