@@ -1,7 +1,7 @@
-// cards.js
 import { recipes } from '../../data/recipes.js';
-// Fonction pour générer une carte de recette
-function generateRecipeCard(recipe) {
+import { updateRecipeCount } from './recipe-count.js';
+
+export function generateRecipeCard(recipe) {
   const card = document.createElement('div');
   card.classList.add('col-span-4', 'rounded-3xl', 'overflow-hidden');
   card.innerHTML = `
@@ -29,8 +29,7 @@ function generateRecipeCard(recipe) {
   return card;
 }
 
-// Fonction pour afficher les cartes de recettes
-function displayRecipeCards(recipes) {
+export function displayRecipeCards(recipes) {
   const cardsSection = document.getElementById('cards-section');
   cardsSection.innerHTML = '';
   recipes.forEach(recipe => {
@@ -39,30 +38,25 @@ function displayRecipeCards(recipes) {
   });
 }
 
-// Fonction pour appliquer les filtres (version avec boucles natives)
-function applyFilters() {
+export function applyFilters() {
   const searchQuery = document.getElementById('big-searchbar').value.trim().toLowerCase();
   const selectedIngredients = Array.from(document.querySelectorAll('.selected-btns button[data-type="ingredients"] span')).map(button => button.textContent.toLowerCase());
   const selectedAppliances = Array.from(document.querySelectorAll('.selected-btns button[data-type="appliances"] span')).map(button => button.textContent.toLowerCase());
   const selectedUstensils = Array.from(document.querySelectorAll('.selected-btns button[data-type="ustensils"] span')).map(button => button.textContent.toLowerCase());
 
   const filteredRecipes = recipes.filter(recipe => {
-    // Vérification du critère de recherche
     const matchSearchQuery = recipe.name.toLowerCase().includes(searchQuery) ||
       recipe.description.toLowerCase().includes(searchQuery) ||
       recipe.ingredients.some(ing => ing.ingredient.toLowerCase().includes(searchQuery));
 
-    // Vérification des ingrédients
     const matchIngredients = selectedIngredients.length === 0 ||
       selectedIngredients.every(selectedIng => 
         recipe.ingredients.some(ing => ing.ingredient.toLowerCase() === selectedIng)
       );
 
-    // Vérification des appareils
     const matchAppliances = selectedAppliances.length === 0 ||
       selectedAppliances.includes(recipe.appliance.toLowerCase());
 
-    // Vérification des ustensiles
     const matchUstensils = selectedUstensils.length === 0 ||
       selectedUstensils.every(selectedUst => 
         recipe.ustensils.some(ust => ust.toLowerCase() === selectedUst)
@@ -72,13 +66,9 @@ function applyFilters() {
   });
 
   displayRecipeCards(filteredRecipes);
-  updateFilteredRecipeCount(filteredRecipes);
+  updateRecipeCount(recipes.length, filteredRecipes.length);
 }
 
-// Écouteur d'événement pour la recherche
-document.getElementById('big-searchbar').addEventListener('input', function (event) {
-  applyFilters();
-});
-
-// Affichage initial des cartes de recettes
-displayRecipeCards(recipes);
+export function setupSearchListener() {
+  document.getElementById('big-searchbar').addEventListener('input', applyFilters);
+}
