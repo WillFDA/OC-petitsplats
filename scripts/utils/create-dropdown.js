@@ -26,10 +26,10 @@ function createDropdownElement(dropdown) {
   dropdownParent.innerHTML = `
     <button class="dropdown-button flex w-full justify-between items-center gap-8 text-black font-sans">
       <span class="font-sans">${dropdown.label}</span>
-      <img class="w-3 h-fit group-data-[open=true]:rotate-180" src="./public/caret.svg" alt="caret icon">
+      <img class="w-3 h-fit group-data-[open=true]:rotate-180" src="/caret.svg" alt="caret icon">
     </button>
     <div class="search-input relative mt-2 hidden group-data-[open=true]:block">
-      <img src="./public/tiny_search.svg" alt="search icon" class="absolute top-1/2 -translate-y-1/2 right-3">
+      <img src="/tiny_search.svg" alt="search icon" class="absolute top-1/2 -translate-y-1/2 right-3">
       <input type="text" class="border-gray-200 border-1 border py-1 px-1 rounded focus:outline-none text-gray-500 font-light">
     </div>
     <div class="selected-btns hidden group-data-[open=true]:block"></div>
