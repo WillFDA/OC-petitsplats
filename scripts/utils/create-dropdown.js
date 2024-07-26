@@ -102,7 +102,7 @@ function createSelectedButton(text, dropdownType, selectedBtnsContainer) {
   selectedButton.setAttribute('data-type', dropdownType);
   selectedButton.innerHTML = `
     <span>${text}</span>
-    <img src="./tiny_close.svg" alt="delete icon" class="w-5 delete-btn">
+    <img src="./public/tiny_close.svg" alt="delete icon" class="w-5 delete-btn">
   `;
   selectedBtnsContainer.appendChild(selectedButton);
 }
@@ -123,7 +123,7 @@ function createBigQueryButton(text, dropdownType) {
   bigQueryButton.setAttribute('data-type', dropdownType);
   bigQueryButton.innerHTML = `
     <span>${text}</span>
-    <img src="/close_big.svg" alt="close icon" class="delete-big-query">
+    <img src="./public/close_big.svg" alt="close icon" class="delete-big-query">
   `;
   queryBigList.appendChild(bigQueryButton);
 
