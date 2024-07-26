@@ -1,5 +1,5 @@
 // create-dropdown.js
-import { recipes } from '../../data/recipes.js'
+import { recipes } from '../../data/recipes.js';
 
 function createDropdowns() {
   const dropdownsContainer = document.getElementById('dropdowns');

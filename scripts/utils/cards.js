@@ -1,5 +1,6 @@
 // cards.js
 // Fonction pour générer une carte de recette
+import { recipes } from '../../data/recipes.js';
 function generateRecipeCard(recipe) {
   const card = document.createElement('div');
   card.classList.add('col-span-4', 'rounded-3xl', 'overflow-hidden');

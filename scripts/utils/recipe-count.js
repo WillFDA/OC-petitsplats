@@ -1,5 +1,5 @@
 // recipe-count.js
-
+import { recipes } from '../../data/recipes.js';
 // Fonction pour mettre à jour le nombre de recettes
 function updateRecipeCount(totalRecipes, filteredRecipes) {
   const recipeCountElement = document.getElementById('recipe-count');
