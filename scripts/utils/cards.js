@@ -9,7 +9,7 @@ function generateRecipeCard(recipe) {
       <div class="bg-primary text-black w-fit p-1 px-4 rounded-full absolute top-4 right-4">
         <span class="text-xs">${recipe.time}min</span>
       </div>
-      <img class="w-full object-cover h-64" src="./public/images/${recipe.image}" alt="">
+      <img class="w-full object-cover h-64" src="/images/${recipe.image}" alt="">
     </div>
     <div class="bg-white p-6 h-full">
       <h2 class="text-lg text-black line-clamp-1 font-serif my-4">${recipe.name}</h2>
