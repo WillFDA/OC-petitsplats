@@ -1,7 +1,7 @@
-// cards.js
-// Fonction pour générer une carte de recette
 import { recipes } from '../../data/recipes.js';
-function generateRecipeCard(recipe) {
+import { updateRecipeCount } from './recipe-count.js';
+
+export function generateRecipeCard(recipe) {
   const card = document.createElement('div');
   card.classList.add('col-span-4', 'rounded-3xl', 'overflow-hidden');
   card.innerHTML = `
@@ -29,8 +29,7 @@ function generateRecipeCard(recipe) {
   return card;
 }
 
-// Fonction pour afficher les cartes de recettes
-function displayRecipeCards(recipes) {
+export function displayRecipeCards(recipes) {
   const cardsSection = document.getElementById('cards-section');
   cardsSection.innerHTML = '';
   recipes.forEach(recipe => {
@@ -39,97 +38,37 @@ function displayRecipeCards(recipes) {
   });
 }
 
-// Fonction pour appliquer les filtres (version avec boucles natives)
-function applyFilters() {
+export function applyFilters() {
   const searchQuery = document.getElementById('big-searchbar').value.trim().toLowerCase();
   const selectedIngredients = Array.from(document.querySelectorAll('.selected-btns button[data-type="ingredients"] span')).map(button => button.textContent.toLowerCase());
   const selectedAppliances = Array.from(document.querySelectorAll('.selected-btns button[data-type="appliances"] span')).map(button => button.textContent.toLowerCase());
   const selectedUstensils = Array.from(document.querySelectorAll('.selected-btns button[data-type="ustensils"] span')).map(button => button.textContent.toLowerCase());
-  
-  const filteredRecipes = [];
 
-  for (let i = 0; i < recipes.length; i++) {
-    const recipe = recipes[i];
-    let matchSearchQuery = false;
-    let matchIngredients = selectedIngredients.length === 0;
-    let matchAppliances = selectedAppliances.length === 0;
-    let matchUstensils = selectedUstensils.length === 0;
+  const filteredRecipes = recipes.filter(recipe => {
+    const matchSearchQuery = recipe.name.toLowerCase().includes(searchQuery) ||
+      recipe.description.toLowerCase().includes(searchQuery) ||
+      recipe.ingredients.some(ing => ing.ingredient.toLowerCase().includes(searchQuery));
 
-    // Vérification du critère de recherche
-    if (recipe.name.toLowerCase().includes(searchQuery) || 
-        recipe.description.toLowerCase().includes(searchQuery)) {
-      matchSearchQuery = true;
-    } else {
-      let j = 0;
-      while (j < recipe.ingredients.length && !matchSearchQuery) {
-        if (recipe.ingredients[j].ingredient.toLowerCase().includes(searchQuery)) {
-          matchSearchQuery = true;
-        }
-        j++;
-      }
-    }
+    const matchIngredients = selectedIngredients.length === 0 ||
+      selectedIngredients.every(selectedIng => 
+        recipe.ingredients.some(ing => ing.ingredient.toLowerCase() === selectedIng)
+      );
 
-    // Vérification des ingrédients
-    if (selectedIngredients.length > 0) {
-      matchIngredients = true;
-      for (let k = 0; k < selectedIngredients.length; k++) {
-        let ingredientFound = false;
-        for (let l = 0; l < recipe.ingredients.length; l++) {
-          if (recipe.ingredients[l].ingredient.toLowerCase() === selectedIngredients[k]) {
-            ingredientFound = true;
-            break;
-          }
-        }
-        if (!ingredientFound) {
-          matchIngredients = false;
-          break;
-        }
-      }
-    }
+    const matchAppliances = selectedAppliances.length === 0 ||
+      selectedAppliances.includes(recipe.appliance.toLowerCase());
 
-    // Vérification des appareils
-    if (selectedAppliances.length > 0) {
-      matchAppliances = false;
-      for (let m = 0; m < selectedAppliances.length; m++) {
-        if (recipe.appliance.toLowerCase() === selectedAppliances[m]) {
-          matchAppliances = true;
-          break;
-        }
-      }
-    }
+    const matchUstensils = selectedUstensils.length === 0 ||
+      selectedUstensils.every(selectedUst => 
+        recipe.ustensils.some(ust => ust.toLowerCase() === selectedUst)
+      );
 
-    // Vérification des ustensiles
-    if (selectedUstensils.length > 0) {
-      matchUstensils = true;
-      for (let n = 0; n < selectedUstensils.length; n++) {
-        let ustensilFound = false;
-        for (let p = 0; p < recipe.ustensils.length; p++) {
-          if (recipe.ustensils[p].toLowerCase() === selectedUstensils[n]) {
-            ustensilFound = true;
-            break;
-          }
-        }
-        if (!ustensilFound) {
-          matchUstensils = false;
-          break;
-        }
-      }
-    }
-
-    // Si tous les critères sont satisfaits, ajouter la recette aux résultats filtrés
-    if (matchSearchQuery && matchIngredients && matchAppliances && matchUstensils) {
-      filteredRecipes.push(recipe);
-    }
-  }
+    return matchSearchQuery && matchIngredients && matchAppliances && matchUstensils;
+  });
 
   displayRecipeCards(filteredRecipes);
-  updateFilteredRecipeCount(filteredRecipes);
+  updateRecipeCount(recipes.length, filteredRecipes.length);
 }
 
-// Écouteur d'événement pour la recherche
-document.getElementById('big-searchbar').addEventListener('input', function (event) {
-  applyFilters();
-});
-
-// Affichage initial des cartes de recettes
-displayRecipeCards(recipes);
+export function setupSearchListener() {
+  document.getElementById('big-searchbar').addEventListener('input', applyFilters);
+}

@@ -1,7 +1,7 @@
-// create-dropdown.js
 import { recipes } from '../../data/recipes.js';
+import { applyFilters } from './cards.js';
 
-function createDropdowns() {
+export function createDropdowns() {
   const dropdownsContainer = document.getElementById('dropdowns');
   const dropdownTypes = [
     { type: 'ingredients', label: 'Ingrédients' },
@@ -214,6 +214,3 @@ function getUniqueAppliances() {
 function getUniqueUstensils() {
   return [...new Set(recipes.flatMap(recipe => recipe.ustensils))];
 }
-
-// Call this function when the DOM is loaded
-document.addEventListener('DOMContentLoaded', createDropdowns);

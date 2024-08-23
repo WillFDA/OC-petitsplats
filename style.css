@@ -9,7 +9,7 @@
 
 .bg-hero {
   background-color: rgba(0, 0, 0, 0.4);
-  background-image: url(./public/HERO.jpeg);
+  background-image: url(/public/HERO.jpeg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

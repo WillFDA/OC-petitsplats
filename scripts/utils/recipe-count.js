@@ -1,7 +1,8 @@
-// recipe-count.js
-import { recipes } from '../../data/recipes.js';
-// Fonction pour mettre à jour le nombre de recettes
-function updateRecipeCount(totalRecipes, filteredRecipes) {
+export function initRecipeCount(recipes) {
+  updateRecipeCount(recipes.length, recipes.length);
+}
+
+export function updateRecipeCount(totalRecipes, filteredRecipes) {
   const recipeCountElement = document.getElementById('recipe-count');
   if (filteredRecipes === totalRecipes) {
     recipeCountElement.textContent = `${totalRecipes} recettes`;
@@ -9,18 +10,3 @@ function updateRecipeCount(totalRecipes, filteredRecipes) {
     recipeCountElement.textContent = `${filteredRecipes} recettes sur ${totalRecipes}`;
   }
 }
-
-// Fonction pour initialiser le nombre total de recettes
-function initRecipeCount() {
-  const totalRecipes = recipes.length;
-  updateRecipeCount(totalRecipes, totalRecipes);
-}
-
-// Fonction pour mettre à jour le nombre de recettes filtrées
-function updateFilteredRecipeCount(filteredRecipes) {
-  const totalRecipes = recipes.length;
-  updateRecipeCount(totalRecipes, filteredRecipes.length);
-}
-
-// Initialisation du nombre total de recettes au chargement de la page
-document.addEventListener('DOMContentLoaded', initRecipeCount);
